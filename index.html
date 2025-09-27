@@ -3,364 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Townline Golf Lounge - Group Trivia</title>
+    <title>Townline Golf Trivia</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
         body { background: #2E7D32; color: white; text-align: center; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; }
-        h1 { color: #FFD700; margin: 20px 0; font-size: 2.5rem; }
+        .container { max-width: 600px; margin: 0 auto; }
+        h1 { color: #FFD700; margin: 20px 0; }
         button { 
             background: #FFD700; color: #2E7D32; border: none; padding: 15px 30px; 
-            margin: 10px; border-radius: 8px; font-size: 1.2rem; cursor: pointer;
-            font-weight: bold; display: block; width: 300px; margin: 15px auto;
+            margin: 10px; border-radius: 5px; font-size: 1.1rem; cursor: pointer;
+            font-weight: bold;
         }
         .screen { display: none; }
         .active { display: block; }
-        .room-code { 
-            font-size: 4rem; font-weight: bold; color: #FFD700; margin: 20px 0;
-            background: #1B5E20; padding: 20px; border-radius: 10px; letter-spacing: 10px;
-        }
-        input { 
-            padding: 15px; margin: 10px; width: 300px; border: 2px solid #FFD700; 
-            border-radius: 8px; background: white; color: #2E7D32; font-size: 1.1rem;
-            font-weight: bold;
-        }
-        .question { font-size: 1.4rem; margin: 20px 0; color: #FFD700; padding: 0 20px; }
-        .options { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 20px 0; }
+        .room-code { font-size: 3rem; font-weight: bold; color: #FFD700; margin: 20px 0; }
+        .question { font-size: 1.3rem; margin: 20px 0; color: #FFD700; }
         .option { 
-            background: white; color: #2E7D32; padding: 15px; margin: 5px; 
-            border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 1.1rem;
+            background: white; color: #2E7D32; padding: 15px; margin: 10px; 
+            border-radius: 5px; cursor: pointer; font-weight: bold;
         }
-        .score { font-size: 1.3rem; margin: 15px 0; color: #FFD700; }
-        .player-list { max-width: 400px; margin: 20px auto; text-align: left; }
-        .player-item { 
-            background: #1B5E20; padding: 10px; margin: 5px; border-radius: 5px;
-            display: flex; justify-content: space-between;
-        }
+        input { padding: 10px; margin: 10px; border-radius: 5px; border: none; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🏌️‍♂️ Townline Golf Lounge</h1>
-        <h2>Group Trivia Challenge</h2>
+        <h1>🏌️‍♂️ Townline Golf Trivia</h1>
         
         <!-- Main Menu -->
-        <div id="menu-screen" class="screen active">
-            <div style="margin: 30px 0;">
-                <h3>Host a group game or join an existing one</h3>
-            </div>
-            <button onclick="showScreen('host-screen')">🎯 HOST A GAME</button>
-            <button onclick="showScreen('join-screen')">📱 JOIN A GAME</button>
+        <div id="menu" class="screen active">
+            <button onclick="showScreen('create')">Create Game</button>
+            <button onclick="showScreen('join')">Join Game</button>
         </div>
         
-        <!-- Host Screen -->
-        <div id="host-screen" class="screen">
-            <h2>Host a Group Game</h2>
-            <button onclick="createGame()">CREATE GAME ROOM</button>
-            <div id="host-info" style="display: none;">
-                <div class="room-code" id="room-code-display">----</div>
-                <p>Share this code with players at your lounge</p>
-                <div class="player-list" id="host-player-list"></div>
-                <button onclick="startGame()">START GAME</button>
-            </div>
-            <button onclick="showScreen('menu-screen')">← BACK</button>
+        <!-- Create Game -->
+        <div id="create" class="screen">
+            <h2>Create Game Room</h2>
+            <button onclick="createGame()">Generate Room Code</button>
+            <div class="room-code" id="roomCode">----</div>
+            <p>Share this code with players</p>
+            <button onclick="startGame()" id="startBtn" style="display:none">Start Game</button>
+            <button onclick="showScreen('menu')">Back</button>
         </div>
         
-        <!-- Join Screen -->
-        <div id="join-screen" class="screen">
-            <h2>Join a Group Game</h2>
-            <input type="text" id="player-name" placeholder="Your Team Name">
-            <input type="text" id="room-code" placeholder="Room Code" maxlength="4" style="text-transform: uppercase">
-            <button onclick="joinGame()">JOIN GAME</button>
-            <div id="join-status" style="margin: 15px;"></div>
-            <button onclick="showScreen('menu-screen')">← BACK</button>
+        <!-- Join Game -->
+        <div id="join" class="screen">
+            <h2>Join Game</h2>
+            <input type="text" id="playerName" placeholder="Your name">
+            <input type="text" id="gameCode" placeholder="Room code" maxlength="4" style="text-transform:uppercase">
+            <button onclick="joinGame()">Join</button>
+            <div id="joinStatus"></div>
+            <button onclick="showScreen('menu')">Back</button>
         </div>
         
-        <!-- Game Screen (for players) -->
-        <div id="game-screen" class="screen">
-            <div class="score">Team: <span id="current-team"></span> | Score: <span id="player-score">0</span></div>
-            <div class="score">Question: <span id="question-number">1</span> of <span id="total-questions">10</span></div>
-            <div class="question" id="question-text">Get ready for the first question!</div>
-            <div class="options" id="options-container"></div>
-            <div id="game-status" style="margin: 15px;"></div>
-        </div>
-        
-        <!-- Host Game Screen -->
-        <div id="host-game-screen" class="screen">
-            <h2>Hosting: Room <span id="host-room-code"></span></h2>
-            <div class="score">Players: <span id="player-count">0</span> | Question: <span id="host-question-number">1</span>/10</div>
-            <div class="question" id="host-question-text">Question will appear here</div>
-            <div class="options" id="host-options"></div>
-            <div class="score">Answers: <span id="answers-received">0</span>/<span id="total-players">0</span></div>
-            <button onclick="nextQuestion()">NEXT QUESTION</button>
-            <button onclick="showAnswer()">REVEAL ANSWER</button>
-            <div class="player-list" id="game-leaderboard"></div>
-            <button onclick="endGame()">END GAME</button>
+        <!-- Game Screen -->
+        <div id="game" class="screen">
+            <div class="question" id="question">Question will appear here</div>
+            <div id="options"></div>
+            <div id="score">Score: <span id="scoreValue">0</span></div>
+            <button onclick="endGame()">End Game</button>
         </div>
     </div>
 
     <script>
-        // Golf trivia questions
+        // Simple questions
         const questions = [
             {
-                question: "What is the standard number of holes on a regulation golf course?",
-                options: ["A. 9 holes", "B. 18 holes", "C. 27 holes", "D. 36 holes"],
-                correct: 1
+                question: "How many holes on a standard golf course?",
+                options: ["9", "18", "27", "36"],
+                answer: 1
             },
             {
-                question: "Which club is used for the longest shots from the tee?",
-                options: ["A. Putter", "B. Wedge", "C. Driver", "D. Iron"],
-                correct: 2
+                question: "Which club is for longest shots?",
+                options: ["Putter", "Wedge", "Driver", "Iron"],
+                answer: 2
             },
             {
-                question: "What is a score of one under par called?",
-                options: ["A. Eagle", "B. Birdie", "C. Bogey", "D. Par"],
-                correct: 1
-            },
-            {
-                question: "Which major tournament is played at Augusta National?",
-                options: ["A. U.S. Open", "B. The Open", "C. The Masters", "D. PGA Championship"],
-                correct: 2
-            },
-            {
-                question: "What is the area around the green called?",
-                options: ["A. Rough", "B. Fairway", "C. Fringe", "D. Bunker"],
-                correct: 2
-            },
-            {
-                question: "What is two under par called?",
-                options: ["A. Albatross", "B. Eagle", "C. Birdie", "D. Condor"],
-                correct: 1
-            },
-            {
-                question: "Maximum clubs allowed in a bag?",
-                options: ["A. 12 clubs", "B. 14 clubs", "C. 16 clubs", "D. 18 clubs"],
-                correct: 1
-            },
-            {
-                question: "Who is known as 'The Golden Bear'?",
-                options: ["A. Tiger Woods", "B. Arnold Palmer", "C. Jack Nicklaus", "D. Phil Mickelson"],
-                correct: 2
-            },
-            {
-                question: "What is a score of one over par called?",
-                options: ["A. Birdie", "B. Eagle", "C. Bogey", "D. Par"],
-                correct: 2
-            },
-            {
-                question: "What is a hole-in-one also called?",
-                options: ["A. Eagle", "B. Ace", "C. Birdie", "D. Both A and B"],
-                correct: 3
+                question: "What is one under par called?",
+                options: ["Eagle", "Birdie", "Bogey", "Par"],
+                answer: 1
             }
         ];
 
-        // Game state
-        let currentRoom = '';
-        let playerName = '';
-        let isHost = false;
-        let currentQuestion = 0;
-        let playerScore = 0;
-        let players = {};
-
-        // Screen management
-        function showScreen(screenId) {
+        // Simple screen management
+        function showScreen(screenName) {
             document.querySelectorAll('.screen').forEach(screen => {
                 screen.classList.remove('active');
             });
-            document.getElementById(screenId).classList.add('active');
+            document.getElementById(screenName).classList.add('active');
         }
 
-        // Host functions
+        // Create game
         function createGame() {
-            currentRoom = generateRoomCode();
-            isHost = true;
-            
-            document.getElementById('room-code-display').textContent = currentRoom;
-            document.getElementById('host-info').style.display = 'block';
-            
-            // Simulate players joining (in real app, this would be real connections)
-            setTimeout(() => {
-                players = {
-                    'Eagle Team': { score: 0 },
-                    'Birdie Squad': { score: 0 },
-                    'Par Players': { score: 0 }
-                };
-                updatePlayerList();
-            }, 1000);
+            const code = Math.random().toString(36).substr(2, 4).toUpperCase();
+            document.getElementById('roomCode').textContent = code;
+            document.getElementById('startBtn').style.display = 'block';
         }
 
-        function updatePlayerList() {
-            const playerList = document.getElementById('host-player-list');
-            playerList.innerHTML = '<h3>Teams Joined:</h3>';
+        // Join game
+        function joinGame() {
+            const name = document.getElementById('playerName').value;
+            const code = document.getElementById('gameCode').value;
             
-            for (const [team, data] of Object.entries(players)) {
-                const div = document.createElement('div');
-                div.className = 'player-item';
-                div.innerHTML = `<span>${team}</span> <span>${data.score} pts</span>`;
-                playerList.appendChild(div);
+            if (!name) {
+                document.getElementById('joinStatus').textContent = 'Enter your name';
+                return;
             }
             
-            document.getElementById('player-count').textContent = Object.keys(players).length;
-            document.getElementById('total-players').textContent = Object.keys(players).length;
+            if (code.length !== 4) {
+                document.getElementById('joinStatus').textContent = 'Enter 4-letter code';
+                return;
+            }
+            
+            document.getElementById('joinStatus').textContent = 'Joined game!';
+            showScreen('game');
+            showQuestion(0);
         }
 
+        // Start game
         function startGame() {
-            document.getElementById('host-room-code').textContent = currentRoom;
-            showScreen('host-game-screen');
-            showHostQuestion(0);
+            showScreen('game');
+            showQuestion(0);
         }
 
-        function showHostQuestion(index) {
+        // Show question
+        function showQuestion(index) {
             if (index >= questions.length) {
                 endGame();
                 return;
             }
             
-            currentQuestion = index;
             const q = questions[index];
+            document.getElementById('question').textContent = q.question;
             
-            document.getElementById('host-question-number').textContent = index + 1;
-            document.getElementById('host-question-text').textContent = q.question;
-            
-            const optionsContainer = document.getElementById('host-options');
-            optionsContainer.innerHTML = '';
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = '';
             
             q.options.forEach((option, i) => {
                 const div = document.createElement('div');
                 div.className = 'option';
                 div.textContent = option;
-                div.id = 'host-option-' + i;
-                optionsContainer.appendChild(div);
-            });
-            
-            document.getElementById('answers-received').textContent = '0';
-        }
-
-        function nextQuestion() {
-            showHostQuestion(currentQuestion + 1);
-        }
-
-        function showAnswer() {
-            const q = questions[currentQuestion];
-            document.getElementById('host-option-' + q.correct).style.background = '#4CAF50';
-            
-            // Update scores (simulate correct/incorrect answers)
-            Object.keys(players).forEach(team => {
-                players[team].score += Math.floor(Math.random() * 10) + 5;
-            });
-            updateLeaderboard();
-        }
-
-        function updateLeaderboard() {
-            const leaderboard = document.getElementById('game-leaderboard');
-            leaderboard.innerHTML = '<h3>🏆 Leaderboard</h3>';
-            
-            // Sort players by score
-            const sorted = Object.entries(players).sort((a, b) => b[1].score - a[1].score);
-            
-            sorted.forEach(([team, data], index) => {
-                const div = document.createElement('div');
-                div.className = 'player-item';
-                const medal = index === 0 ? '🥇 ' : index === 1 ? '🥈 ' : index === 2 ? '🥉 ' : '• ';
-                div.innerHTML = `<span>${medal} ${team}</span> <span>${data.score} pts</span>`;
-                leaderboard.appendChild(div);
+                div.onclick = function() {
+                    checkAnswer(i, q.answer);
+                };
+                optionsDiv.appendChild(div);
             });
         }
 
-        // Player functions
-        function joinGame() {
-            playerName = document.getElementById('player-name').value.trim();
-            currentRoom = document.getElementById('room-code').value.trim().toUpperCase();
+        // Check answer
+        function checkAnswer(selected, correct) {
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => opt.style.pointerEvents = 'none');
             
-            if (!playerName) {
-                document.getElementById('join-status').textContent = 'Please enter your team name';
-                return;
-            }
-            
-            if (currentRoom.length !== 4) {
-                document.getElementById('join-status').textContent = 'Please enter a valid 4-digit room code';
-                return;
-            }
-            
-            document.getElementById('join-status').textContent = `Joining room ${currentRoom}...`;
-            
-            // Simulate successful join
-            setTimeout(() => {
-                document.getElementById('current-team').textContent = playerName;
-                document.getElementById('total-questions').textContent = questions.length;
-                showScreen('game-screen');
-                startPlayerGame();
-            }, 1500);
-        }
-
-        function startPlayerGame() {
-            playerScore = 0;
-            currentQuestion = 0;
-            showPlayerQuestion(0);
-        }
-
-        function showPlayerQuestion(index) {
-            if (index >= questions.length) return;
-            
-            const q = questions[index];
-            document.getElementById('question-number').textContent = index + 1;
-            document.getElementById('question-text').textContent = q.question;
-            document.getElementById('player-score').textContent = playerScore;
-            
-            const optionsContainer = document.getElementById('options-container');
-            optionsContainer.innerHTML = '';
-            
-            q.options.forEach((option, i) => {
-                const div = document.createElement('div');
-                div.className = 'option';
-                div.textContent = option;
-                div.onclick = () => answerQuestion(i, index);
-                optionsContainer.appendChild(div);
-            });
-            
-            document.getElementById('game-status').textContent = 'Select your answer!';
-        }
-
-        function answerQuestion(choice, questionIndex) {
-            const q = questions[questionIndex];
-            const options = document.querySelectorAll('#options-container .option');
-            
-            // Disable all options
-            options.forEach(opt => {
-                opt.style.pointerEvents = 'none';
-            });
-            
-            if (choice === q.correct) {
-                options[choice].style.background = '#4CAF50';
-                playerScore += 10;
-                document.getElementById('game-status').innerHTML = '✅ Correct! +10 points!';
+            if (selected === correct) {
+                options[selected].style.background = '#4CAF50';
+                const score = parseInt(document.getElementById('scoreValue').textContent) + 10;
+                document.getElementById('scoreValue').textContent = score;
             } else {
-                options[choice].style.background = '#f44336';
-                options[q.correct].style.background = '#4CAF50';
-                document.getElementById('game-status').innerHTML = '❌ Incorrect';
+                options[selected].style.background = '#f44336';
+                options[correct].style.background = '#4CAF50';
             }
             
-            // Auto-advance after 3 seconds
             setTimeout(() => {
-                currentQuestion++;
-                if (currentQuestion < questions.length) {
-                    showPlayerQuestion(currentQuestion);
-                } else {
-                    document.getElementById('game-status').innerHTML = 
-                        `<h3>Game Over! Final Score: ${playerScore}/${questions.length * 10}</h3>`;
-                }
-            }, 3000);
+                const currentIndex = questions.indexOf(
+                    questions.find(q => q.question === document.getElementById('question').textContent)
+                );
+                showQuestion(currentIndex + 1);
+            }, 2000);
         }
 
+        // End game
         function endGame() {
-            showScreen('menu-screen');
+            showScreen('menu');
         }
 
-        // Utility function
-        function generateRoomCode() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            let code = '';
-            for (let i = 0; i < 4; i++) {
-                code += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return code;
+        // Make sure it works on mobile
+        document.addEventListener('touchstart', function() {});
+    </script>
+</body>
+</html>
