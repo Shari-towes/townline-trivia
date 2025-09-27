@@ -3,246 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Townline Golf & Sports Lounge Trivia</title>
+    <title>Townline Golf Lounge - Group Trivia</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-        body { background: #FFFFFF; color: #333; min-height: 100vh; }
-        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
-        
-        header { 
-            text-align: center; margin-bottom: 30px; padding: 25px 0; 
-            background: #2E7D32; color: white; border-radius: 10px;
-        }
-        .logo { font-size: 2.2rem; font-weight: bold; margin-bottom: 5px; }
-        .subtitle { color: #FFD700; font-size: 1.2rem; font-weight: bold; }
-        
-        .screen { display: none; text-align: center; }
-        .screen.active { display: block; }
-        
+        body { background: #2E7D32; color: white; text-align: center; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { color: #FFD700; margin: 20px 0; font-size: 2.5rem; }
         button { 
-            background: #2E7D32; color: white; border: none; padding: 16px 30px; 
-            margin: 12px; border-radius: 8px; font-size: 1.1rem; cursor: pointer;
-            min-width: 180px; transition: all 0.3s; font-weight: bold;
+            background: #FFD700; color: #2E7D32; border: none; padding: 15px 30px; 
+            margin: 10px; border-radius: 8px; font-size: 1.2rem; cursor: pointer;
+            font-weight: bold; display: block; width: 300px; margin: 15px auto;
         }
-        button:hover { background: #1B5E20; }
-        button:disabled { background: #CCCCCC; cursor: not-allowed; }
-        button.secondary { background: #FFD700; color: #2E7D32; font-weight: bold; }
-        
-        input { 
-            padding: 16px; margin: 12px; width: 100%; max-width: 320px; 
-            border: 2px solid #2E7D32; border-radius: 8px; background: #F8F8F8; 
-            color: #333; font-size: 1rem; font-weight: bold;
-        }
-        
+        .screen { display: none; }
+        .active { display: block; }
         .room-code { 
-            font-size: 3.5rem; font-weight: bold; color: #2E7D32; margin: 25px 0; 
-            background: #FFD700; padding: 20px; border-radius: 15px; letter-spacing: 8px;
+            font-size: 4rem; font-weight: bold; color: #FFD700; margin: 20px 0;
+            background: #1B5E20; padding: 20px; border-radius: 10px; letter-spacing: 10px;
         }
-        
-        .question-counter {
-            background: #2E7D32; color: white; padding: 10px 20px;
-            border-radius: 20px; font-weight: bold; margin: 15px auto;
-            display: inline-block; font-size: 1.1rem;
+        input { 
+            padding: 15px; margin: 10px; width: 300px; border: 2px solid #FFD700; 
+            border-radius: 8px; background: white; color: #2E7D32; font-size: 1.1rem;
+            font-weight: bold;
         }
-        
-        .question { 
-            font-size: 1.5rem; margin: 25px 0; color: #2E7D32; padding: 0 20px;
-            font-weight: bold; line-height: 1.4;
+        .question { font-size: 1.4rem; margin: 20px 0; color: #FFD700; padding: 0 20px; }
+        .options { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 20px 0; }
+        .option { 
+            background: white; color: #2E7D32; padding: 15px; margin: 5px; 
+            border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 1.1rem;
         }
-        
-        .options { display: grid; gap: 15px; margin: 30px 0; padding: 0 15px; }
-        .option-btn { 
-            padding: 20px; background: #E8F5E8; color: #2E7D32; border: 3px solid #2E7D32; 
-            border-radius: 10px; cursor: pointer; font-size: 1.1rem; transition: all 0.3s;
-            font-weight: bold; text-align: center;
-        }
-        .option-btn:hover { background: #C8E6C9; }
-        .option-btn.correct { background: #4CAF50; color: white; border-color: #4CAF50; }
-        .option-btn.incorrect { background: #f44336; color: white; border-color: #f44336; }
-        .option-btn.selected { background: #2E7D32; color: white; }
-        
-        .status { 
-            background: #E8F5E8; padding: 20px; margin: 20px 0; border-radius: 10px; 
-            border: 2px solid #2E7D32; color: #2E7D32; font-weight: bold;
-        }
-        
-        .score-display {
-            background: #FFD700; color: #2E7D32; padding: 15px;
-            border-radius: 10px; font-weight: bold; margin: 15px 0;
-            border: 2px solid #2E7D32; font-size: 1.2rem;
-        }
-        
-        @media (min-width: 768px) {
-            .options { grid-template-columns: 1fr 1fr; }
+        .score { font-size: 1.3rem; margin: 15px 0; color: #FFD700; }
+        .player-list { max-width: 400px; margin: 20px auto; text-align: left; }
+        .player-item { 
+            background: #1B5E20; padding: 10px; margin: 5px; border-radius: 5px;
+            display: flex; justify-content: space-between;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <div class="logo">🏌️‍♂️ TOWNLINE GOLF & SPORTS LOUNGE</div>
-            <div class="subtitle">TRIVIA CHALLENGE</div>
-        </header>
+        <h1>🏌️‍♂️ Townline Golf Lounge</h1>
+        <h2>Group Trivia Challenge</h2>
         
-        <!-- Home Screen -->
-        <div id="home-screen" class="screen active">
-            <div class="status">
-                <h2>Welcome to Townline Trivia!</h2>
-                <p>Test your golf knowledge</p>
+        <!-- Main Menu -->
+        <div id="menu-screen" class="screen active">
+            <div style="margin: 30px 0;">
+                <h3>Host a group game or join an existing one</h3>
             </div>
-            <div>
-                <button onclick="startSinglePlayer()">🎮 Single Player</button>
-                <button onclick="showScreen('multiplayer-setup')">👥 Multiplayer</button>
-            </div>
-        </div>
-        
-        <!-- Single Player Game -->
-        <div id="single-player-screen" class="screen">
-            <div class="score-display">Score: <span id="score">0</span> | Question: <span id="question-num">1</span>/15</div>
-            <div class="question" id="question-text">Loading question...</div>
-            <div class="options" id="options-container"></div>
-            <div class="status" id="feedback" style="display:none"></div>
-            <button onclick="nextQuestion()" id="next-btn" style="display:none">Next Question</button>
-            <button onclick="showScreen('home-screen')" class="secondary">← Main Menu</button>
-        </div>
-        
-        <!-- Multiplayer Setup -->
-        <div id="multiplayer-setup" class="screen">
-            <div class="status">
-                <h2>Multiplayer Mode</h2>
-                <p>Play with friends on the same network</p>
-            </div>
-            <div>
-                <button onclick="hostMultiplayer()">🎯 Host Game</button>
-                <button onclick="showScreen('join-screen')">📱 Join Game</button>
-            </div>
-            <button onclick="showScreen('home-screen')" class="secondary">← Back</button>
+            <button onclick="showScreen('host-screen')">🎯 HOST A GAME</button>
+            <button onclick="showScreen('join-screen')">📱 JOIN A GAME</button>
         </div>
         
         <!-- Host Screen -->
         <div id="host-screen" class="screen">
-            <h2>Host Game</h2>
-            <div class="status">
-                <p>Share this code with players:</p>
-                <div class="room-code" id="room-code">----</div>
-                <p>Players joined: <span id="player-count">0</span></p>
+            <h2>Host a Group Game</h2>
+            <button onclick="createGame()">CREATE GAME ROOM</button>
+            <div id="host-info" style="display: none;">
+                <div class="room-code" id="room-code-display">----</div>
+                <p>Share this code with players at your lounge</p>
+                <div class="player-list" id="host-player-list"></div>
+                <button onclick="startGame()">START GAME</button>
             </div>
-            <div>
-                <button onclick="startMultiplayerGame()" id="start-btn" disabled>🚀 Start Game</button>
-                <button onclick="showScreen('multiplayer-setup')" class="secondary">← Back</button>
-            </div>
+            <button onclick="showScreen('menu-screen')">← BACK</button>
         </div>
         
         <!-- Join Screen -->
         <div id="join-screen" class="screen">
-            <h2>Join Game</h2>
-            <div class="status">
-                <input type="text" id="player-name" placeholder="🏆 Your team name">
-                <input type="text" id="join-code" placeholder="🔢 Room code" maxlength="4" style="text-transform:uppercase">
-                <button onclick="joinGame()">✅ Join Game</button>
-                <div id="join-status">Enter your details</div>
-            </div>
-            <button onclick="showScreen('multiplayer-setup')" class="secondary">← Back</button>
+            <h2>Join a Group Game</h2>
+            <input type="text" id="player-name" placeholder="Your Team Name">
+            <input type="text" id="room-code" placeholder="Room Code" maxlength="4" style="text-transform: uppercase">
+            <button onclick="joinGame()">JOIN GAME</button>
+            <div id="join-status" style="margin: 15px;"></div>
+            <button onclick="showScreen('menu-screen')">← BACK</button>
         </div>
         
-        <!-- Multiplayer Game Screen -->
-        <div id="multiplayer-game" class="screen">
-            <div class="status">
-                <h3>Team: <span id="current-team"></span></h3>
-                <div class="score-display">Your Score: <span id="team-score">0</span></div>
-                <div class="question-counter" id="mp-question-counter">Question 1 of 15</div>
-            </div>
-            <div class="question" id="mp-question">Waiting for question...</div>
-            <div class="options" id="mp-options"></div>
-            <div class="status" id="mp-feedback" style="display:none"></div>
-            <button onclick="leaveMultiplayer()" class="secondary">← Leave Game</button>
+        <!-- Game Screen (for players) -->
+        <div id="game-screen" class="screen">
+            <div class="score">Team: <span id="current-team"></span> | Score: <span id="player-score">0</span></div>
+            <div class="score">Question: <span id="question-number">1</span> of <span id="total-questions">10</span></div>
+            <div class="question" id="question-text">Get ready for the first question!</div>
+            <div class="options" id="options-container"></div>
+            <div id="game-status" style="margin: 15px;"></div>
+        </div>
+        
+        <!-- Host Game Screen -->
+        <div id="host-game-screen" class="screen">
+            <h2>Hosting: Room <span id="host-room-code"></span></h2>
+            <div class="score">Players: <span id="player-count">0</span> | Question: <span id="host-question-number">1</span>/10</div>
+            <div class="question" id="host-question-text">Question will appear here</div>
+            <div class="options" id="host-options"></div>
+            <div class="score">Answers: <span id="answers-received">0</span>/<span id="total-players">0</span></div>
+            <button onclick="nextQuestion()">NEXT QUESTION</button>
+            <button onclick="showAnswer()">REVEAL ANSWER</button>
+            <div class="player-list" id="game-leaderboard"></div>
+            <button onclick="endGame()">END GAME</button>
         </div>
     </div>
 
     <script>
-        // Game questions
+        // Golf trivia questions
         const questions = [
             {
                 question: "What is the standard number of holes on a regulation golf course?",
                 options: ["A. 9 holes", "B. 18 holes", "C. 27 holes", "D. 36 holes"],
-                correctAnswer: 1
+                correct: 1
             },
             {
-                question: "Which golf club is typically used for the longest shots from the tee?",
+                question: "Which club is used for the longest shots from the tee?",
                 options: ["A. Putter", "B. Wedge", "C. Driver", "D. Iron"],
-                correctAnswer: 2
+                correct: 2
             },
             {
-                question: "What term describes scoring one stroke under par on a hole?",
+                question: "What is a score of one under par called?",
                 options: ["A. Eagle", "B. Birdie", "C. Bogey", "D. Par"],
-                correctAnswer: 1
+                correct: 1
             },
             {
-                question: "Which major tournament is played annually at Augusta National Golf Club?",
-                options: ["A. U.S. Open", "B. The Open Championship", "C. The Masters", "D. PGA Championship"],
-                correctAnswer: 2
+                question: "Which major tournament is played at Augusta National?",
+                options: ["A. U.S. Open", "B. The Open", "C. The Masters", "D. PGA Championship"],
+                correct: 2
             },
             {
-                question: "What is the area of closely mowed grass around the putting green called?",
+                question: "What is the area around the green called?",
                 options: ["A. Rough", "B. Fairway", "C. Fringe", "D. Bunker"],
-                correctAnswer: 2
+                correct: 2
             },
             {
-                question: "What is a score of two strokes under par on a single hole called?",
+                question: "What is two under par called?",
                 options: ["A. Albatross", "B. Eagle", "C. Birdie", "D. Condor"],
-                correctAnswer: 1
+                correct: 1
             },
             {
-                question: "Which of these is NOT a type of golf club?",
-                options: ["A. Driver", "B. Putter", "C. Slider", "D. Wedge"],
-                correctAnswer: 2
+                question: "Maximum clubs allowed in a bag?",
+                options: ["A. 12 clubs", "B. 14 clubs", "C. 16 clubs", "D. 18 clubs"],
+                correct: 1
             },
             {
-                question: "In golf, what is a 'handicap' used for?",
-                options: ["A. Measuring club distance", "B. Leveling player abilities", "C. Counting penalty strokes", "D. Determining course difficulty"],
-                correctAnswer: 1
-            },
-            {
-                question: "What is the maximum number of clubs allowed in a golfer's bag during play?",
-                options: ["A. 10 clubs", "B. 12 clubs", "C. 14 clubs", "D. 16 clubs"],
-                correctAnswer: 2
-            },
-            {
-                question: "Which golf legend is known as 'The Golden Bear'?",
+                question: "Who is known as 'The Golden Bear'?",
                 options: ["A. Tiger Woods", "B. Arnold Palmer", "C. Jack Nicklaus", "D. Phil Mickelson"],
-                correctAnswer: 2
+                correct: 2
             },
             {
-                question: "What is the term for a golf score of one stroke over par?",
-                options: ["A. Birdie", "B. Eagle", "C. Bogey", "D. Double Bogey"],
-                correctAnswer: 2
+                question: "What is a score of one over par called?",
+                options: ["A. Birdie", "B. Eagle", "C. Bogey", "D. Par"],
+                correct: 2
             },
             {
-                question: "Which major championship is known as 'The Open'?",
-                options: ["A. British Open", "B. US Open", "C. Canadian Open", "D. Australian Open"],
-                correctAnswer: 0
-            },
-            {
-                question: "What is the name of the person who carries a player's clubs?",
-                options: ["A. Assistant", "B. Caddy", "C. Porter", "D. Handler"],
-                correctAnswer: 1
-            },
-            {
-                question: "Which of these is NOT a golf major championship?",
-                options: ["A. The Players Championship", "B. The Masters", "C. PGA Championship", "D. US Open"],
-                correctAnswer: 0
-            },
-            {
-                question: "What is the term for hitting the ball from the tee into the hole in one stroke?",
-                options: ["A. Eagle", "B. Hole-in-one", "C. Ace", "D. Both B and C"],
-                correctAnswer: 3
+                question: "What is a hole-in-one also called?",
+                options: ["A. Eagle", "B. Ace", "C. Birdie", "D. Both A and B"],
+                correct: 3
             }
         ];
 
         // Game state
-        let currentQuestionIndex = 0;
-        let score = 0;
-        let gameActive = false;
+        let currentRoom = '';
+        let playerName = '';
+        let isHost = false;
+        let currentQuestion = 0;
+        let playerScore = 0;
+        let players = {};
 
         // Screen management
         function showScreen(screenId) {
@@ -252,191 +170,197 @@
             document.getElementById(screenId).classList.add('active');
         }
 
-        // Single player functions
-        function startSinglePlayer() {
-            currentQuestionIndex = 0;
-            score = 0;
-            gameActive = true;
-            showScreen('single-player-screen');
-            showQuestion();
+        // Host functions
+        function createGame() {
+            currentRoom = generateRoomCode();
+            isHost = true;
+            
+            document.getElementById('room-code-display').textContent = currentRoom;
+            document.getElementById('host-info').style.display = 'block';
+            
+            // Simulate players joining (in real app, this would be real connections)
+            setTimeout(() => {
+                players = {
+                    'Eagle Team': { score: 0 },
+                    'Birdie Squad': { score: 0 },
+                    'Par Players': { score: 0 }
+                };
+                updatePlayerList();
+            }, 1000);
         }
 
-        function showQuestion() {
-            if (currentQuestionIndex >= questions.length) {
+        function updatePlayerList() {
+            const playerList = document.getElementById('host-player-list');
+            playerList.innerHTML = '<h3>Teams Joined:</h3>';
+            
+            for (const [team, data] of Object.entries(players)) {
+                const div = document.createElement('div');
+                div.className = 'player-item';
+                div.innerHTML = `<span>${team}</span> <span>${data.score} pts</span>`;
+                playerList.appendChild(div);
+            }
+            
+            document.getElementById('player-count').textContent = Object.keys(players).length;
+            document.getElementById('total-players').textContent = Object.keys(players).length;
+        }
+
+        function startGame() {
+            document.getElementById('host-room-code').textContent = currentRoom;
+            showScreen('host-game-screen');
+            showHostQuestion(0);
+        }
+
+        function showHostQuestion(index) {
+            if (index >= questions.length) {
                 endGame();
                 return;
             }
-
-            const q = questions[currentQuestionIndex];
-            document.getElementById('question-text').textContent = q.question;
-            document.getElementById('question-num').textContent = currentQuestionIndex + 1;
-            document.getElementById('score').textContent = score;
             
-            const optionsContainer = document.getElementById('options-container');
+            currentQuestion = index;
+            const q = questions[index];
+            
+            document.getElementById('host-question-number').textContent = index + 1;
+            document.getElementById('host-question-text').textContent = q.question;
+            
+            const optionsContainer = document.getElementById('host-options');
             optionsContainer.innerHTML = '';
             
-            q.options.forEach((option, index) => {
+            q.options.forEach((option, i) => {
                 const div = document.createElement('div');
-                div.className = 'option-btn';
+                div.className = 'option';
                 div.textContent = option;
-                div.onclick = () => checkAnswer(index);
+                div.id = 'host-option-' + i;
                 optionsContainer.appendChild(div);
             });
             
-            document.getElementById('feedback').style.display = 'none';
-            document.getElementById('next-btn').style.display = 'none';
-        }
-
-        function checkAnswer(selectedIndex) {
-            if (!gameActive) return;
-            
-            const q = questions[currentQuestionIndex];
-            const options = document.querySelectorAll('.option-btn');
-            const feedback = document.getElementById('feedback');
-            
-            options.forEach(opt => {
-                opt.style.pointerEvents = 'none';
-            });
-            
-            if (selectedIndex === q.correctAnswer) {
-                options[selectedIndex].classList.add('correct');
-                feedback.innerHTML = '✅ Correct! +10 points!';
-                score += 10;
-                document.getElementById('score').textContent = score;
-            } else {
-                options[selectedIndex].classList.add('incorrect');
-                options[q.correctAnswer].classList.add('correct');
-                feedback.innerHTML = '❌ Incorrect. The right answer was: ' + q.options[q.correctAnswer];
-            }
-            
-            feedback.style.display = 'block';
-            document.getElementById('next-btn').style.display = 'block';
-            gameActive = false;
+            document.getElementById('answers-received').textContent = '0';
         }
 
         function nextQuestion() {
-            currentQuestionIndex++;
-            gameActive = true;
-            showQuestion();
+            showHostQuestion(currentQuestion + 1);
         }
 
-        function endGame() {
-            alert(`Game Over! Your final score: ${score}/${questions.length * 10}`);
-            showScreen('home-screen');
-        }
-
-        // Multiplayer functions (simplified for now)
-        function hostMultiplayer() {
-            const code = Math.random().toString(36).substring(2,6).toUpperCase();
-            document.getElementById('room-code').textContent = code;
-            showScreen('host-screen');
+        function showAnswer() {
+            const q = questions[currentQuestion];
+            document.getElementById('host-option-' + q.correct).style.background = '#4CAF50';
             
-            // Simulate players joining
-            setTimeout(() => {
-                document.getElementById('player-count').textContent = '3';
-                document.getElementById('start-btn').disabled = false;
-            }, 2000);
+            // Update scores (simulate correct/incorrect answers)
+            Object.keys(players).forEach(team => {
+                players[team].score += Math.floor(Math.random() * 10) + 5;
+            });
+            updateLeaderboard();
         }
 
-        function startMultiplayerGame() {
-            alert('Multiplayer game starting! (This would connect players in a real version)');
-            // For now, just show the single player game screen
-            startSinglePlayer();
+        function updateLeaderboard() {
+            const leaderboard = document.getElementById('game-leaderboard');
+            leaderboard.innerHTML = '<h3>🏆 Leaderboard</h3>';
+            
+            // Sort players by score
+            const sorted = Object.entries(players).sort((a, b) => b[1].score - a[1].score);
+            
+            sorted.forEach(([team, data], index) => {
+                const div = document.createElement('div');
+                div.className = 'player-item';
+                const medal = index === 0 ? '🥇 ' : index === 1 ? '🥈 ' : index === 2 ? '🥉 ' : '• ';
+                div.innerHTML = `<span>${medal} ${team}</span> <span>${data.score} pts</span>`;
+                leaderboard.appendChild(div);
+            });
         }
 
+        // Player functions
         function joinGame() {
-            const name = document.getElementById('player-name').value;
-            const code = document.getElementById('join-code').value;
+            playerName = document.getElementById('player-name').value.trim();
+            currentRoom = document.getElementById('room-code').value.trim().toUpperCase();
             
-            if (!name) {
+            if (!playerName) {
                 document.getElementById('join-status').textContent = 'Please enter your team name';
                 return;
             }
             
-            if (code.length !== 4) {
-                document.getElementById('join-status').textContent = 'Please enter a valid 4-letter code';
+            if (currentRoom.length !== 4) {
+                document.getElementById('join-status').textContent = 'Please enter a valid 4-digit room code';
                 return;
             }
             
-            document.getElementById('join-status').textContent = 'Joining game...';
-            document.getElementById('current-team').textContent = name;
+            document.getElementById('join-status').textContent = `Joining room ${currentRoom}...`;
             
+            // Simulate successful join
             setTimeout(() => {
-                showScreen('multiplayer-game');
-                // Start the game for this player
-                currentQuestionIndex = 0;
-                score = 0;
-                showMultiplayerQuestion();
+                document.getElementById('current-team').textContent = playerName;
+                document.getElementById('total-questions').textContent = questions.length;
+                showScreen('game-screen');
+                startPlayerGame();
             }, 1500);
         }
 
-        function showMultiplayerQuestion() {
-            if (currentQuestionIndex >= questions.length) {
-                endMultiplayerGame();
-                return;
-            }
+        function startPlayerGame() {
+            playerScore = 0;
+            currentQuestion = 0;
+            showPlayerQuestion(0);
+        }
 
-            const q = questions[currentQuestionIndex];
-            document.getElementById('mp-question').textContent = q.question;
-            document.getElementById('mp-question-counter').textContent = 
-                `Question ${currentQuestionIndex + 1} of ${questions.length}`;
-            document.getElementById('team-score').textContent = score;
+        function showPlayerQuestion(index) {
+            if (index >= questions.length) return;
             
-            const optionsContainer = document.getElementById('mp-options');
+            const q = questions[index];
+            document.getElementById('question-number').textContent = index + 1;
+            document.getElementById('question-text').textContent = q.question;
+            document.getElementById('player-score').textContent = playerScore;
+            
+            const optionsContainer = document.getElementById('options-container');
             optionsContainer.innerHTML = '';
             
-            q.options.forEach((option, index) => {
+            q.options.forEach((option, i) => {
                 const div = document.createElement('div');
-                div.className = 'option-btn';
+                div.className = 'option';
                 div.textContent = option;
-                div.onclick = () => checkMultiplayerAnswer(index);
+                div.onclick = () => answerQuestion(i, index);
                 optionsContainer.appendChild(div);
             });
             
-            document.getElementById('mp-feedback').style.display = 'none';
+            document.getElementById('game-status').textContent = 'Select your answer!';
         }
 
-        function checkMultiplayerAnswer(selectedIndex) {
-            const q = questions[currentQuestionIndex];
-            const options = document.querySelectorAll('#mp-options .option-btn');
-            const feedback = document.getElementById('mp-feedback');
+        function answerQuestion(choice, questionIndex) {
+            const q = questions[questionIndex];
+            const options = document.querySelectorAll('#options-container .option');
             
+            // Disable all options
             options.forEach(opt => {
                 opt.style.pointerEvents = 'none';
             });
             
-            if (selectedIndex === q.correctAnswer) {
-                options[selectedIndex].classList.add('correct');
-                feedback.innerHTML = '✅ Correct! +10 points!';
-                score += 10;
+            if (choice === q.correct) {
+                options[choice].style.background = '#4CAF50';
+                playerScore += 10;
+                document.getElementById('game-status').innerHTML = '✅ Correct! +10 points!';
             } else {
-                options[selectedIndex].classList.add('incorrect');
-                options[q.correctAnswer].classList.add('correct');
-                feedback.innerHTML = '❌ Incorrect';
+                options[choice].style.background = '#f44336';
+                options[q.correct].style.background = '#4CAF50';
+                document.getElementById('game-status').innerHTML = '❌ Incorrect';
             }
-            
-            feedback.style.display = 'block';
             
             // Auto-advance after 3 seconds
             setTimeout(() => {
-                currentQuestionIndex++;
-                showMultiplayerQuestion();
+                currentQuestion++;
+                if (currentQuestion < questions.length) {
+                    showPlayerQuestion(currentQuestion);
+                } else {
+                    document.getElementById('game-status').innerHTML = 
+                        `<h3>Game Over! Final Score: ${playerScore}/${questions.length * 10}</h3>`;
+                }
             }, 3000);
         }
 
-        function endMultiplayerGame() {
-            alert(`Game Over! Your score: ${score}/${questions.length * 10}`);
-            showScreen('home-screen');
+        function endGame() {
+            showScreen('menu-screen');
         }
 
-        function leaveMultiplayer() {
-            showScreen('home-screen');
-        }
-
-        // Make sure buttons work on mobile
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add touch support for all buttons
-            document.querySelectorAll('button').forEach(btn => {
-                btn.addEventListener('touchend', function(e) {
-                    e.preventDefault();
-                    this.click();
+        // Utility function
+        function generateRoomCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            let code = '';
+            for (let i = 0; i < 4; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return code;
